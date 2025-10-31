@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sharpe Share</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script type="module" src="js/posts.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SharpeShare</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-  <!-- Header -->
-  <header>
-    <h1>Sharpe Share 🏈💰</h1>
-    <nav>
-      <a href="create_post.html" id="createLink">Create Post</a>
-      <a href="profile.html" id="profileLink" style="display:none;">My Profile</a>
-      <a href="login.html" id="loginLink">Login</a>
-      <a href="register.html" id="registerLink">Register</a>
-      <a href="#" id="logoutLink" style="display:none;">Logout</a>
-    </nav>
+  <!-- ================= HEADER ================= -->
+  <header class="main-header">
+    <div class="header-container">
+      <h1 class="logo">SharpeShare 🧠💰</h1>
+      <nav>
+        <a id="homeLink" href="index.html">Home</a>
+        <a id="createLink" href="create_post.html" style="display:none;">Create Post</a>
+        <a id="profileLink" href="profile.html" style="display:none;">Profile</a>
+        <a id="loginLink" href="login.html">Login</a>
+        <a id="registerLink" href="register.html">Register</a>
+        <a id="logoutLink" href="#" style="display:none;">Logout</a>
+      </nav>
+    </div>
   </header>
 
-  <!-- Main Feed -->
+  <!-- ================= WELCOME SECTION ================= -->
+  <section class="welcome-section">
+    <h2>Welcome to SharpeShare</h2>
+    <p class="tagline">Where bettors share insights, picks, and bragging rights.</p>
+    <blockquote id="quote" class="quote"></blockquote>
+  </section>
+
+  <!-- ================= FEED SECTION ================= -->
   <main>
-    <h2>Latest Picks & Predictions</h2>
-    <div id="feed">Loading posts...</div>
+    <div id="feed" class="feed"></div>
   </main>
 
-  <!-- ===== Edit Post Popup ===== -->
-  <div id="editPopup" class="popup">
-    <div class="popup-content">
-      <h2>Edit Post</h2>
-
-      <input type="text" id="editTitle" placeholder="Title">
-      <textarea id="editContent" rows="5" placeholder="Content"></textarea>
-      <input type="text" id="editSport" placeholder="Sport (NBA, NFL...)">
-      <input type="text" id="editOdds" placeholder="Odds (+120, -110, etc.)">
-
-      <button id="saveEditBtn">Save Changes</button>
-      <button id="cancelEditBtn">Cancel</button>
-    </div>
-  </div>
+  <script type="module" src="js/posts.js"></script>
+  <script>
+    // Random quote for dynamic feel
+    const quotes = [
+      '"Scared money don’t make money."',
+      '"Bet on yourself first."',
+      '"Every underdog has its day."',
+      '"Luck favors the prepared mind."',
+      '"Winners focus on execution, not emotion."'
+    ];
+    document.getElementById('quote').textContent =
+      quotes[Math.floor(Math.random() * quotes.length)];
+  </script>
 </body>
 </html>
