@@ -29,12 +29,24 @@
     <blockquote id="quote" class="quote"></blockquote>
   </section>
 
-  <!-- ================= FEED SECTION ================= -->
-  <main>
-    <div id="feed" class="feed"></div>
-  </main>
+  <!-- ================= MAIN LAYOUT ================= -->
+  <div class="layout">
+    <!-- Feed -->
+    <main class="main-feed">
+      <div id="feed" class="feed"></div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>🔥 Top Picks This Week</h3>
+      <div id="top-picks">
+        <p>Loading...</p>
+      </div>
+    </aside>
+  </div>
 
   <script type="module" src="js/posts.js"></script>
+  <script type="module" src="js/top_picks.js"></script>
   <script>
     // Random quote for dynamic feel
     const quotes = [
