@@ -1,4 +1,3 @@
-// js/posts.js
 import { supabase } from './supabase.js';
 
 async function checkAuthLinks() {
@@ -43,9 +42,8 @@ async function loadPosts() {
     return;
   }
 
-  feed.innerHTML = posts
-    .map(
-      p => `
+  feed.innerHTML = posts.map(
+    p => `
       <div class="post" data-id="${p.id}">
         <h3>${p.title}</h3>
         <p>${p.content}</p>
@@ -54,18 +52,14 @@ async function loadPosts() {
         <small>${new Date(p.created_at).toLocaleString()}</small>
 
         <div class="post-actions">
-          ${
-            currentUser && currentUser.id === p.user_id
-              ? `<button class="edit-btn">✏️ Edit</button>
-                 <button class="delete-btn">🗑 Delete</button>`
-              : ''
-          }
-          ${
-            currentUser
-              ? `<button class="like-btn">❤️ Like</button>
-                 <span class="like-count" id="likes-${p.id}">0</span>`
-              : ''
-          }
+          ${currentUser && currentUser.id === p.user_id
+            ? `<button class="edit-btn">✏️ Edit</button>
+               <button class="delete-btn">🗑 Delete</button>`
+            : ''}
+          ${currentUser
+            ? `<button class="like-btn">❤️ Like</button>
+               <span class="like-count" id="likes-${p.id}">0</span>`
+            : ''}
           <button class="toggle-comments">💬 View Comments</button>
         </div>
 
@@ -79,16 +73,14 @@ async function loadPosts() {
           }
         </div>
       </div>`
-    )
-    .join('');
+  ).join('');
 
   attachPostListeners(currentUser);
   updateLikeCounts();
 }
 
-// attach all button handlers
 function attachPostListeners(currentUser) {
-  // delete post
+  // Delete
   document.querySelectorAll('.delete-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
@@ -99,7 +91,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // edit post
+  // Edit
   document.querySelectorAll('.edit-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
@@ -116,7 +108,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // toggle comments
+  // Toggle comments
   document.querySelectorAll('.toggle-comments').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -129,7 +121,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // add comment
+  // Add comment
   document.querySelectorAll('.add-comment').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -148,7 +140,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // like/unlike
+  // Like/Unlike
   document.querySelectorAll('.like-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const postId = e.target.closest('.post').dataset.id;
@@ -187,25 +179,27 @@ function attachPostListeners(currentUser) {
   );
 }
 
-// refresh like counts
+// ✅ Fixed version without .group()
 async function updateLikeCounts() {
-  const { data, error } = await supabase
-    .from('likes')
-    .select('post_id, count:id')
-    .group('post_id');
+  const { data: likes, error } = await supabase.from('likes').select('post_id');
 
   if (error) {
     console.error('Like count error:', error.message);
     return;
   }
 
-  data.forEach(row => {
-    const el = document.getElementById(`likes-${row.post_id}`);
-    if (el) el.textContent = row.count;
+  const likeCounts = {};
+  likes.forEach(like => {
+    likeCounts[like.post_id] = (likeCounts[like.post_id] || 0) + 1;
+  });
+
+  document.querySelectorAll('.like-count').forEach(el => {
+    const postId = el.id.replace('likes-', '');
+    el.textContent = likeCounts[postId] || 0;
   });
 }
 
-// load comments
+// Load comments
 async function loadComments(postId, list) {
   const { data: comments, error } = await supabase
     .from('comments')
