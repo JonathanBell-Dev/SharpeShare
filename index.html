@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- ================= HEADER ================= -->
+  <!-- ========== HEADER ========== -->
   <header class="main-header">
     <div class="header-container">
       <h1 class="logo">SharpeShare 🧠💰</h1>
 
-      <!-- Hamburger icon for mobile -->
+      <!-- Hamburger for mobile -->
       <div class="hamburger" id="hamburger">☰</div>
 
       <nav id="navMenu" class="nav-menu">
@@ -26,21 +26,19 @@
     </div>
   </header>
 
-  <!-- ================= WELCOME SECTION ================= -->
+  <!-- ========== WELCOME SECTION ========== -->
   <section class="welcome-section">
     <h2>Welcome to SharpeShare</h2>
     <p class="tagline">Where bettors share insights, picks, and bragging rights.</p>
     <blockquote id="quote" class="quote"></blockquote>
   </section>
 
-  <!-- ================= MAIN LAYOUT ================= -->
+  <!-- ========== MAIN CONTENT ========== -->
   <div class="layout">
-    <!-- Feed -->
     <main class="main-feed">
       <div id="feed" class="feed"></div>
     </main>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
       <h3>🔥 Top Picks This Week</h3>
       <div id="top-picks">
@@ -49,11 +47,11 @@
     </aside>
   </div>
 
-  <!-- Scripts -->
+  <!-- JS -->
   <script type="module" src="js/posts.js"></script>
   <script type="module" src="js/top_picks.js"></script>
   <script>
-    // Random quote
+    // Random betting quote
     const quotes = [
       '"Scared money don’t make money."',
       '"Bet on yourself first."',
@@ -69,6 +67,13 @@
     const navMenu = document.getElementById('navMenu');
     hamburger.addEventListener('click', () => {
       navMenu.classList.toggle('active');
+    });
+
+    // Close menu when a link is tapped
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) navMenu.classList.remove('active');
+      });
     });
   </script>
 </body>
