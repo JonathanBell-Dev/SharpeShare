@@ -1,5 +1,9 @@
+// js/posts.js
 import { supabase } from './supabase.js';
 
+// ==========================
+//  AUTH + NAVBAR HANDLING
+// ==========================
 async function checkAuthLinks() {
   const { data: { user } } = await supabase.auth.getUser();
   const loggedIn = !!user;
@@ -22,6 +26,9 @@ async function checkAuthLinks() {
   return user;
 }
 
+// ==========================
+//  LOAD POSTS
+// ==========================
 async function loadPosts() {
   const currentUser = await checkAuthLinks();
 
@@ -79,8 +86,11 @@ async function loadPosts() {
   updateLikeCounts();
 }
 
+// ==========================
+//  POST ACTION LISTENERS
+// ==========================
 function attachPostListeners(currentUser) {
-  // Delete
+  // Delete Post
   document.querySelectorAll('.delete-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
@@ -91,7 +101,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // Edit
+  // Edit Post
   document.querySelectorAll('.edit-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
@@ -108,7 +118,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // Toggle comments
+  // Toggle Comments
   document.querySelectorAll('.toggle-comments').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -121,7 +131,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // Add comment
+  // Add Comment
   document.querySelectorAll('.add-comment').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -179,7 +189,9 @@ function attachPostListeners(currentUser) {
   );
 }
 
-// ✅ Fixed version without .group()
+// ==========================
+//  LIKE COUNT HANDLER
+// ==========================
 async function updateLikeCounts() {
   const { data: likes, error } = await supabase.from('likes').select('post_id');
 
@@ -199,8 +211,11 @@ async function updateLikeCounts() {
   });
 }
 
-// Load comments
+// ==========================
+//  COMMENTS (WITH INLINE EDIT)
+// ==========================
 async function loadComments(postId, list) {
+  const { data: { user } } = await supabase.auth.getUser();
   const { data: comments, error } = await supabase
     .from('comments')
     .select('*')
@@ -220,12 +235,91 @@ async function loadComments(postId, list) {
 
   list.innerHTML = comments
     .map(
-      c =>
-        `<div class="comment"><p>${c.content}</p><small>${c.username} • ${new Date(
-          c.created_at
-        ).toLocaleString()}</small></div>`
+      c => `
+        <div class="comment" data-id="${c.id}">
+          <p class="comment-text">${c.content}</p>
+          <small>${c.username} • ${new Date(c.created_at).toLocaleString()}</small>
+          ${user && user.id === c.user_id
+            ? `<div class="comment-actions">
+                 <button class="edit-comment">✏️ Edit</button>
+                 <button class="delete-comment">🗑 Delete</button>
+               </div>`
+            : ''}
+        </div>`
     )
     .join('');
+
+  // Edit Comment Inline
+  list.querySelectorAll('.edit-comment').forEach(btn =>
+    btn.addEventListener('click', e => {
+      const commentDiv = e.target.closest('.comment');
+      const textEl = commentDiv.querySelector('.comment-text');
+      const oldText = textEl.textContent;
+
+      const textarea = document.createElement('textarea');
+      textarea.value = oldText;
+      textarea.className = 'comment-edit-box';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = '💾 Save';
+      saveBtn.className = 'save-comment';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = '❌ Cancel';
+      cancelBtn.className = 'cancel-comment';
+
+      textEl.replaceWith(textarea);
+      btn.parentElement.replaceChildren(saveBtn, cancelBtn);
+
+      saveBtn.addEventListener('click', async () => {
+        const newText = textarea.value.trim();
+        if (!newText) return alert('Comment cannot be empty.');
+
+        const { error } = await supabase
+          .from('comments')
+          .update({ content: newText })
+          .eq('id', commentDiv.dataset.id)
+          .eq('user_id', user.id);
+
+        if (error) {
+          alert('Failed to update comment.');
+          console.error(error.message);
+          return;
+        }
+
+        textarea.replaceWith(textEl);
+        textEl.textContent = newText;
+        loadComments(postId, list);
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        textarea.replaceWith(textEl);
+        loadComments(postId, list);
+      });
+    })
+  );
+
+  // Delete Comment
+  list.querySelectorAll('.delete-comment').forEach(btn =>
+    btn.addEventListener('click', async e => {
+      if (!confirm('Delete this comment?')) return;
+      const commentId = e.target.closest('.comment').dataset.id;
+      const { error } = await supabase
+        .from('comments')
+        .delete()
+        .eq('id', commentId)
+        .eq('user_id', user.id);
+      if (error) {
+        alert('Failed to delete comment.');
+        console.error(error.message);
+      } else {
+        e.target.closest('.comment').remove();
+      }
+    })
+  );
 }
 
+// ==========================
+//  INITIALIZE
+// ==========================
 document.addEventListener('DOMContentLoaded', loadPosts);
