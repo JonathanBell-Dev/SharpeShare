@@ -570,3 +570,27 @@ nav a:hover {
   box-shadow: 0 0 15px 4px rgba(56, 189, 248, 0.7);
   transition: box-shadow 0.3s ease;
 }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-feed {
+    width: 100%;
+  }
+
+  .feed {
+    width: 95%;
+  }
+
+  .welcome-section {
+    padding: 20px 10px;
+  }
+}
