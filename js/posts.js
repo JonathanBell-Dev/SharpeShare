@@ -101,20 +101,68 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // Edit Post
+  // ✅ Inline Post Editing
   document.querySelectorAll('.edit-btn').forEach(btn =>
-    btn.addEventListener('click', async e => {
-      const id = e.target.closest('.post').dataset.id;
-      const title = prompt('New title:');
-      const content = prompt('New content:');
-      if (!title || !content) return;
-      const { error } = await supabase
-        .from('posts')
-        .update({ title, content })
-        .eq('id', id)
-        .eq('user_id', currentUser.id);
-      if (error) alert(error.message);
-      else loadPosts();
+    btn.addEventListener('click', e => {
+      const postDiv = e.target.closest('.post');
+      const id = postDiv.dataset.id;
+      const titleEl = postDiv.querySelector('h3');
+      const contentEl = postDiv.querySelector('p');
+      const oldTitle = titleEl.textContent;
+      const oldContent = contentEl.textContent;
+
+      const titleInput = document.createElement('input');
+      titleInput.type = 'text';
+      titleInput.value = oldTitle;
+      titleInput.className = 'post-edit-title';
+
+      const contentBox = document.createElement('textarea');
+      contentBox.value = oldContent;
+      contentBox.className = 'post-edit-box';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = '💾 Save';
+      saveBtn.className = 'save-post';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = '❌ Cancel';
+      cancelBtn.className = 'cancel-post';
+
+      titleEl.replaceWith(titleInput);
+      contentEl.replaceWith(contentBox);
+      btn.parentElement.replaceChildren(saveBtn, cancelBtn);
+
+      saveBtn.addEventListener('click', async () => {
+        const newTitle = titleInput.value.trim();
+        const newContent = contentBox.value.trim();
+        if (!newTitle || !newContent) return alert('Fields cannot be empty.');
+
+        const { error } = await supabase
+          .from('posts')
+          .update({ title: newTitle, content: newContent })
+          .eq('id', id)
+          .eq('user_id', currentUser.id);
+
+        if (error) {
+          alert('Failed to update post.');
+          console.error(error.message);
+          return;
+        }
+
+        titleInput.replaceWith(titleEl);
+        contentBox.replaceWith(contentEl);
+        titleEl.textContent = newTitle;
+        contentEl.textContent = newContent;
+        loadPosts();
+      });
+
+      cancelBtn.addEventListener('click', () => {
+        titleInput.replaceWith(titleEl);
+        contentBox.replaceWith(contentEl);
+        titleEl.textContent = oldTitle;
+        contentEl.textContent = oldContent;
+        loadPosts();
+      });
     })
   );
 
@@ -158,28 +206,17 @@ function attachPostListeners(currentUser) {
       if (!user) return alert('Login first.');
 
       try {
-        const { data: existing, error: selectError } = await supabase
+        const { data: existing } = await supabase
           .from('likes')
           .select('*')
           .eq('post_id', postId)
           .eq('user_id', user.id);
 
-        if (selectError) throw selectError;
-
         if (existing?.length) {
-          const { error: delError } = await supabase
-            .from('likes')
-            .delete()
-            .eq('post_id', postId)
-            .eq('user_id', user.id);
-          if (delError) throw delError;
+          await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', user.id);
         } else {
-          const { error: insError } = await supabase
-            .from('likes')
-            .insert([{ post_id: Number(postId), user_id: user.id }]);
-          if (insError) throw insError;
+          await supabase.from('likes').insert([{ post_id: Number(postId), user_id: user.id }]);
         }
-
         await updateLikeCounts();
       } catch (err) {
         console.error('Like error:', err.message);
@@ -194,7 +231,6 @@ function attachPostListeners(currentUser) {
 // ==========================
 async function updateLikeCounts() {
   const { data: likes, error } = await supabase.from('likes').select('post_id');
-
   if (error) {
     console.error('Like count error:', error.message);
     return;
@@ -212,7 +248,7 @@ async function updateLikeCounts() {
 }
 
 // ==========================
-//  COMMENTS (WITH INLINE EDIT)
+//  COMMENTS (INLINE EDIT)
 // ==========================
 async function loadComments(postId, list) {
   const { data: { user } } = await supabase.auth.getUser();
