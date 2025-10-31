@@ -537,3 +537,36 @@ nav a:hover {
 .top-pick small {
   color: #64748b;
 }
+
+.rank-badge {
+  background: #38bdf8;
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 6px;
+}
+
+.top-pick {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: transform 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.top-pick:hover {
+  transform: scale(1.02);
+  background: #f1f5f9;
+}
+
+.highlight-post {
+  box-shadow: 0 0 15px 4px rgba(56, 189, 248, 0.7);
+  transition: box-shadow 0.3s ease;
+}
