@@ -1,10 +1,8 @@
 // js/posts.js
 import { supabase } from './supabase.js';
 
-// ✅ Check authentication and show/hide nav links
 async function checkAuthLinks() {
   const { data: { user } } = await supabase.auth.getUser();
-
   if (user) {
     document.getElementById('createLink').style.display = 'inline';
     document.getElementById('profileLink').style.display = 'inline';
@@ -29,10 +27,8 @@ async function checkAuthLinks() {
   return user;
 }
 
-// ✅ Load all posts
 async function loadPosts() {
   const currentUser = await checkAuthLinks();
-
   const { data: posts, error } = await supabase
     .from('posts')
     .select('*')
@@ -64,10 +60,57 @@ async function loadPosts() {
           <button class="delete-btn">🗑 Delete</button>
         </div>
       ` : ''}
+
+      <button class="toggle-comments">💬 View Comments</button>
+      <div class="comments-section" style="display:none;">
+        <div class="comment-list">Loading comments...</div>
+        ${currentUser ? `
+          <textarea class="new-comment" placeholder="Write a comment..."></textarea>
+          <button class="add-comment">Post Comment</button>
+        ` : '<p><em>Login to comment</em></p>'}
+      </div>
     </div>
   `).join('');
 
-  // ✅ Add event listeners for delete and edit
+  document.querySelectorAll('.toggle-comments').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const postDiv = e.target.closest('.post');
+      const section = postDiv.querySelector('.comments-section');
+      const list = postDiv.querySelector('.comment-list');
+      if (section.style.display === 'none') {
+        section.style.display = 'block';
+        await loadComments(postDiv.dataset.id, list);
+      } else {
+        section.style.display = 'none';
+      }
+    });
+  });
+
+  document.querySelectorAll('.add-comment').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const postDiv = e.target.closest('.post');
+      const textarea = postDiv.querySelector('.new-comment');
+      const content = textarea.value.trim();
+      if (!content) return alert('Comment cannot be empty.');
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return alert('You must be logged in to comment.');
+
+      const username = user.user_metadata?.username || 'Anonymous';
+      const { error } = await supabase
+        .from('comments')
+        .insert([{ post_id: postDiv.dataset.id, user_id: user.id, username, content }]);
+
+      if (error) {
+        console.error('Error adding comment:', error.message);
+        alert('Failed to add comment.');
+      } else {
+        textarea.value = '';
+        await loadComments(postDiv.dataset.id, postDiv.querySelector('.comment-list'));
+      }
+    });
+  });
+
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const postDiv = e.target.closest('.post');
@@ -75,23 +118,14 @@ async function loadPosts() {
       if (!confirm('Delete this post?')) return;
 
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        alert('You must be logged in to delete.');
-        return;
-      }
-
       const { error } = await supabase
         .from('posts')
         .delete()
         .eq('id', postId)
         .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Delete error:', error.message);
-        alert('Failed to delete post.');
-      } else {
-        postDiv.remove();
-      }
+      if (error) alert('Failed to delete post.');
+      else postDiv.remove();
     });
   });
 
@@ -99,33 +133,48 @@ async function loadPosts() {
     btn.addEventListener('click', async (e) => {
       const postDiv = e.target.closest('.post');
       const postId = postDiv.dataset.id;
-
       const newTitle = prompt('Enter new title:');
       const newContent = prompt('Enter new content:');
       if (!newTitle || !newContent) return;
 
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        alert('You must be logged in to edit.');
-        return;
-      }
-
       const { error } = await supabase
         .from('posts')
         .update({ title: newTitle, content: newContent })
         .eq('id', postId)
         .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Edit error:', error.message);
-        alert('Failed to update post.');
-      } else {
-        alert('Post updated!');
-        loadPosts(); // Refresh the feed
-      }
+      if (error) alert('Failed to update post.');
+      else loadPosts();
     });
   });
 }
 
-// ✅ Initialize on load
+// ✅ Load comments for a post
+async function loadComments(postId, listElement) {
+  const { data: comments, error } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('post_id', postId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error loading comments:', error.message);
+    listElement.innerHTML = '<p>Failed to load comments.</p>';
+    return;
+  }
+
+  if (!comments || comments.length === 0) {
+    listElement.innerHTML = '<p>No comments yet.</p>';
+    return;
+  }
+
+  listElement.innerHTML = comments.map(c => `
+    <div class="comment" data-id="${c.id}">
+      <p>${c.content}</p>
+      <small>by ${c.username || 'Anonymous'} • ${new Date(c.created_at).toLocaleString()}</small>
+    </div>
+  `).join('');
+}
+
 document.addEventListener('DOMContentLoaded', loadPosts);
