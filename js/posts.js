@@ -8,7 +8,6 @@ async function checkAuthLinks() {
   const { data: { user } } = await supabase.auth.getUser();
   const loggedIn = !!user;
 
-  // Show/hide for both navs
   const show = id => document.querySelectorAll(`#${id}`).forEach(el => el.style.display = 'inline');
   const hide = id => document.querySelectorAll(`#${id}`).forEach(el => el.style.display = 'none');
 

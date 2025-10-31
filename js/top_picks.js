@@ -5,7 +5,6 @@ async function loadTopPicks() {
   const topDiv = document.getElementById('top-picks');
 
   try {
-    // Fetch all posts and their like counts
     const { data: likes, error: likeError } = await supabase
       .from('likes')
       .select('post_id, created_at');
@@ -21,7 +20,6 @@ async function loadTopPicks() {
       return;
     }
 
-    // Count likes per post (only within last 7 days)
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -33,13 +31,11 @@ async function loadTopPicks() {
       }
     });
 
-    // Attach like counts to posts
     const postsWithLikes = posts.map(p => ({
       ...p,
       likes: likeCounts[p.id] || 0
     }));
 
-    // Sort and take top 3
     const topThree = postsWithLikes
       .sort((a, b) => b.likes - a.likes)
       .slice(0, 3);
@@ -49,7 +45,6 @@ async function loadTopPicks() {
       return;
     }
 
-    // Display top picks
     topDiv.innerHTML = topThree
       .map(
         (p, i) => `
@@ -62,7 +57,6 @@ async function loadTopPicks() {
       )
       .join('');
 
-    // Scroll + highlight on click
     document.querySelectorAll('.top-pick').forEach(pick => {
       pick.addEventListener('click', () => {
         const postId = pick.getAttribute('data-id');
@@ -71,7 +65,6 @@ async function loadTopPicks() {
           alert('That post is not visible yet — try refreshing the page.');
           return;
         }
-
         postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         postElement.classList.add('highlight-post');
         setTimeout(() => postElement.classList.remove('highlight-post'), 1500);
