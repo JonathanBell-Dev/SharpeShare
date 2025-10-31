@@ -43,8 +43,9 @@ async function loadPosts() {
     return;
   }
 
-  feed.innerHTML = posts.map(
-    p => `
+  feed.innerHTML = posts
+    .map(
+      p => `
       <div class="post" data-id="${p.id}">
         <h3>${p.title}</h3>
         <p>${p.content}</p>
@@ -53,14 +54,18 @@ async function loadPosts() {
         <small>${new Date(p.created_at).toLocaleString()}</small>
 
         <div class="post-actions">
-          ${currentUser && currentUser.id === p.user_id
-            ? `<button class="edit-btn">✏️ Edit</button>
-               <button class="delete-btn">🗑 Delete</button>`
-            : ''}
-          ${currentUser
-            ? `<button class="like-btn">❤️ Like</button>
-               <span class="like-count" id="likes-${p.id}">0</span>`
-            : ''}
+          ${
+            currentUser && currentUser.id === p.user_id
+              ? `<button class="edit-btn">✏️ Edit</button>
+                 <button class="delete-btn">🗑 Delete</button>`
+              : ''
+          }
+          ${
+            currentUser
+              ? `<button class="like-btn">❤️ Like</button>
+                 <span class="like-count" id="likes-${p.id}">0</span>`
+              : ''
+          }
           <button class="toggle-comments">💬 View Comments</button>
         </div>
 
@@ -74,25 +79,27 @@ async function loadPosts() {
           }
         </div>
       </div>`
-  ).join('');
+    )
+    .join('');
 
   attachPostListeners(currentUser);
   updateLikeCounts();
 }
 
+// attach all button handlers
 function attachPostListeners(currentUser) {
-  // Delete
+  // delete post
   document.querySelectorAll('.delete-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
       if (!confirm('Delete this post?')) return;
       const { error } = await supabase.from('posts').delete().eq('id', id).eq('user_id', currentUser.id);
-      if (error) return alert('Failed to delete.');
-      e.target.closest('.post').remove();
+      if (error) alert(error.message);
+      else e.target.closest('.post').remove();
     })
   );
 
-  // Edit
+  // edit post
   document.querySelectorAll('.edit-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const id = e.target.closest('.post').dataset.id;
@@ -104,12 +111,12 @@ function attachPostListeners(currentUser) {
         .update({ title, content })
         .eq('id', id)
         .eq('user_id', currentUser.id);
-      if (error) alert('Failed to update.');
+      if (error) alert(error.message);
       else loadPosts();
     })
   );
 
-  // Toggle comments
+  // toggle comments
   document.querySelectorAll('.toggle-comments').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -122,7 +129,7 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // Add comment
+  // add comment
   document.querySelectorAll('.add-comment').forEach(btn =>
     btn.addEventListener('click', async e => {
       const post = e.target.closest('.post');
@@ -132,44 +139,65 @@ function attachPostListeners(currentUser) {
       const username = user.user_metadata?.username || 'Anonymous';
       const { error } = await supabase
         .from('comments')
-        .insert([{ post_id: post.dataset.id, user_id: user.id, username, content: text }]);
-      if (error) return alert('Failed to comment.');
-      post.querySelector('.new-comment').value = '';
-      await loadComments(post.dataset.id, post.querySelector('.comment-list'));
+        .insert([{ post_id: Number(post.dataset.id), user_id: user.id, username, content: text }]);
+      if (error) alert(error.message);
+      else {
+        post.querySelector('.new-comment').value = '';
+        await loadComments(post.dataset.id, post.querySelector('.comment-list'));
+      }
     })
   );
 
-  // Like
+  // like/unlike
   document.querySelectorAll('.like-btn').forEach(btn =>
     btn.addEventListener('click', async e => {
       const postId = e.target.closest('.post').dataset.id;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return alert('Login first.');
 
-      const { data: existing } = await supabase
-        .from('likes')
-        .select('*')
-        .eq('post_id', postId)
-        .eq('user_id', user.id);
+      try {
+        const { data: existing, error: selectError } = await supabase
+          .from('likes')
+          .select('*')
+          .eq('post_id', postId)
+          .eq('user_id', user.id);
 
-      if (existing?.length) {
-        await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', user.id);
-      } else {
-        await supabase.from('likes').insert([{ post_id: postId, user_id: user.id }]);
+        if (selectError) throw selectError;
+
+        if (existing?.length) {
+          const { error: delError } = await supabase
+            .from('likes')
+            .delete()
+            .eq('post_id', postId)
+            .eq('user_id', user.id);
+          if (delError) throw delError;
+        } else {
+          const { error: insError } = await supabase
+            .from('likes')
+            .insert([{ post_id: Number(postId), user_id: user.id }]);
+          if (insError) throw insError;
+        }
+
+        await updateLikeCounts();
+      } catch (err) {
+        console.error('Like error:', err.message);
+        alert('Error: ' + err.message);
       }
-      await updateLikeCounts();
     })
   );
 }
 
-// Load likes count
+// refresh like counts
 async function updateLikeCounts() {
   const { data, error } = await supabase
     .from('likes')
     .select('post_id, count:id')
     .group('post_id');
 
-  if (error) return console.error('Like count error:', error);
+  if (error) {
+    console.error('Like count error:', error.message);
+    return;
+  }
 
   data.forEach(row => {
     const el = document.getElementById(`likes-${row.post_id}`);
@@ -177,7 +205,7 @@ async function updateLikeCounts() {
   });
 }
 
-// Load comments
+// load comments
 async function loadComments(postId, list) {
   const { data: comments, error } = await supabase
     .from('comments')
@@ -185,11 +213,24 @@ async function loadComments(postId, list) {
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
 
-  if (error) return (list.innerHTML = '<p>Failed to load comments.</p>');
-  if (!comments?.length) return (list.innerHTML = '<p>No comments yet.</p>');
+  if (error) {
+    list.innerHTML = '<p>Failed to load comments.</p>';
+    console.error(error.message);
+    return;
+  }
+
+  if (!comments?.length) {
+    list.innerHTML = '<p>No comments yet.</p>';
+    return;
+  }
 
   list.innerHTML = comments
-    .map(c => `<div class="comment"><p>${c.content}</p><small>${c.username} • ${new Date(c.created_at).toLocaleString()}</small></div>`)
+    .map(
+      c =>
+        `<div class="comment"><p>${c.content}</p><small>${c.username} • ${new Date(
+          c.created_at
+        ).toLocaleString()}</small></div>`
+    )
     .join('');
 }
 
