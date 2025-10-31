@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Post - Sharpe Share</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/create_post.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Create a Post</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#" id="logoutLink">Logout</a>
+    </nav>
+  </header>
+
+  <main class="auth-container">
+    <h2>Share your pick or prediction</h2>
+
+    <input id="title" type="text" placeholder="Post Title (e.g. Lakers vs Celtics)">
+    <textarea id="content" rows="5" placeholder="Write your thoughts..."></textarea>
+    <input id="sport" type="text" placeholder="Sport (NBA, NFL, MLB...)">
+    <input id="odds" type="text" placeholder="Odds (+120, -110, etc.)">
+
+    <button id="postBtn">Post</button>
+    <p id="message"></p>
+  </main>
+</body>
+</html>

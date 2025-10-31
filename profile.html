@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - Sharpe Share</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/profile.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>My Profile 🧠</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="create_post.html" id="createLink">Create Post</a>
+      <a href="#" id="logoutLink">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="profile-info">
+      <h2>Welcome, <span id="username">Loading...</span></h2>
+      <p id="email"></p>
+      <p><strong>Total Posts:</strong> <span id="postCount">0</span></p>
+    </section>
+
+    <hr>
+
+    <section>
+      <h2>Your Posts</h2>
+      <div id="userPosts">Loading your posts...</div>
+    </section>
+  </main>
+</body>
+</html>
