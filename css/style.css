@@ -346,3 +346,63 @@ textarea {
   resize: none;
   font-size: 0.9rem;
 }
+
+.post-edit-title {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.post-edit-box {
+  width: 100%;
+  height: 80px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.post-edit-sport,
+.post-edit-odds {
+  width: 48%;
+  padding: 6px;
+  margin: 4px 1%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+.save-post,
+.cancel-post {
+  margin-right: 5px;
+  font-size: 0.9rem;
+}
+
+.comment {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.comment-actions button {
+  margin-right: 5px;
+  font-size: 0.85rem;
+}
+
+.comment-edit-box {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.9rem;
+}

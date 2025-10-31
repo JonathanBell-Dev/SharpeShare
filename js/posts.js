@@ -101,16 +101,26 @@ function attachPostListeners(currentUser) {
     })
   );
 
-  // ✅ Inline Post Editing
+  // ✅ Inline Post Editing (Title, Content, Sport, Odds)
   document.querySelectorAll('.edit-btn').forEach(btn =>
     btn.addEventListener('click', e => {
       const postDiv = e.target.closest('.post');
       const id = postDiv.dataset.id;
       const titleEl = postDiv.querySelector('h3');
       const contentEl = postDiv.querySelector('p');
+      const infoEl = postDiv.querySelector('p + p + p'); // sport/odds paragraph
+
       const oldTitle = titleEl.textContent;
       const oldContent = contentEl.textContent;
 
+      // Extract sport/odds text
+      const infoText = infoEl?.textContent || '';
+      const sportMatch = infoText.match(/Sport:\s*([^|]+)/);
+      const oddsMatch = infoText.match(/Odds:\s*(.+)$/);
+      const oldSport = sportMatch ? sportMatch[1].trim() : '';
+      const oldOdds = oddsMatch ? oddsMatch[1].trim() : '';
+
+      // Input fields
       const titleInput = document.createElement('input');
       titleInput.type = 'text';
       titleInput.value = oldTitle;
@@ -120,6 +130,18 @@ function attachPostListeners(currentUser) {
       contentBox.value = oldContent;
       contentBox.className = 'post-edit-box';
 
+      const sportInput = document.createElement('input');
+      sportInput.type = 'text';
+      sportInput.value = oldSport;
+      sportInput.placeholder = 'Sport';
+      sportInput.className = 'post-edit-sport';
+
+      const oddsInput = document.createElement('input');
+      oddsInput.type = 'text';
+      oddsInput.value = oldOdds;
+      oddsInput.placeholder = 'Odds';
+      oddsInput.className = 'post-edit-odds';
+
       const saveBtn = document.createElement('button');
       saveBtn.textContent = '💾 Save';
       saveBtn.className = 'save-post';
@@ -128,18 +150,29 @@ function attachPostListeners(currentUser) {
       cancelBtn.textContent = '❌ Cancel';
       cancelBtn.className = 'cancel-post';
 
+      // Replace display elements
       titleEl.replaceWith(titleInput);
       contentEl.replaceWith(contentBox);
+      infoEl.replaceWith(sportInput, oddsInput);
       btn.parentElement.replaceChildren(saveBtn, cancelBtn);
 
+      // Save
       saveBtn.addEventListener('click', async () => {
         const newTitle = titleInput.value.trim();
         const newContent = contentBox.value.trim();
-        if (!newTitle || !newContent) return alert('Fields cannot be empty.');
+        const newSport = sportInput.value.trim();
+        const newOdds = oddsInput.value.trim();
+
+        if (!newTitle || !newContent) return alert('Title and content required.');
 
         const { error } = await supabase
           .from('posts')
-          .update({ title: newTitle, content: newContent })
+          .update({
+            title: newTitle,
+            content: newContent,
+            sport: newSport,
+            odds: newOdds
+          })
           .eq('id', id)
           .eq('user_id', currentUser.id);
 
@@ -149,18 +182,35 @@ function attachPostListeners(currentUser) {
           return;
         }
 
+        const newInfo = document.createElement('p');
+        newInfo.innerHTML = `<strong>Sport:</strong> ${newSport} | <strong>Odds:</strong> ${newOdds}`;
+
         titleInput.replaceWith(titleEl);
         contentBox.replaceWith(contentEl);
+        sportInput.remove();
+        oddsInput.remove();
+
         titleEl.textContent = newTitle;
         contentEl.textContent = newContent;
+        infoEl?.replaceWith?.(newInfo);
+
         loadPosts();
       });
 
+      // Cancel
       cancelBtn.addEventListener('click', () => {
         titleInput.replaceWith(titleEl);
         contentBox.replaceWith(contentEl);
+
+        const oldInfo = document.createElement('p');
+        oldInfo.innerHTML = `<strong>Sport:</strong> ${oldSport} | <strong>Odds:</strong> ${oldOdds}`;
+        sportInput.remove();
+        oddsInput.remove();
+        infoEl?.replaceWith?.(oldInfo);
+
         titleEl.textContent = oldTitle;
         contentEl.textContent = oldContent;
+
         loadPosts();
       });
     })
