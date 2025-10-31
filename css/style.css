@@ -1,3 +1,600 @@
+/* css/style.css */
+
+/* Reset */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9fafb;
+  color: #222;
+}
+
+/* Header */
+header {
+  background-color: #1e293b;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+nav a {
+  color: #93c5fd;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Main Feed */
+main {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.post {
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.post h3 {
+  margin-top: 0;
+  color: #1e40af;
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.auth-container input {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.auth-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.auth-container p {
+  margin-top: 15px;
+}
+
+textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 10px auto;
+  display: block;
+  font-size: 16px;
+  font-family: inherit;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.post-actions {
+  margin-top: 10px;
+}
+
+.post-actions button {
+  margin-right: 8px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-btn {
+  background-color: #2563eb;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #dc2626;
+  color: white;
+}
+
+/* ===== POPUP STYLES ===== */
+.popup {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.popup-content input,
+.popup-content textarea {
+  width: 95%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.popup-content button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#saveEditBtn {
+  background-color: #2563eb;
+  color: white;
+}
+
+#cancelEditBtn {
+  background-color: #dc2626;
+  color: white;
+}
+
+/* === COMMENTS SECTION === */
+.comments-section {
+  background-color: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  margin-top: 12px;
+  transition: all 0.3s ease;
+}
+
+.comments-section p {
+  margin: 0;
+}
+
+.comments-section .comment-list {
+  margin-top: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.comment {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.comment p {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.comment small {
+  font-size: 12px;
+  color: #666;
+}
+
+/* === COMMENT INPUT === */
+.new-comment {
+  width: 100%;
+  height: 60px;
+  margin-top: 8px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: none;
+  transition: border 0.2s ease;
+}
+
+.new-comment:focus {
+  border-color: #0077ff;
+  outline: none;
+}
+
+.add-comment {
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.add-comment:hover {
+  background-color: #005fd1;
+}
+
+/* === COMMENT TOGGLE BUTTON === */
+.toggle-comments {
+  margin-top: 8px;
+  background-color: transparent;
+  border: none;
+  color: #0077ff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.toggle-comments:hover {
+  text-decoration: underline;
+}
+
+/* === COMMENT DELETE BUTTON === */
+.delete-comment {
+  background: transparent;
+  border: none;
+  color: #ff3b3b;
+  font-size: 14px;
+  cursor: pointer;
+  float: right;
+  margin-top: -4px;
+  transition: color 0.2s ease;
+}
+
+.delete-comment:hover {
+  color: #c40000;
+}
+
+/* === LIKE BUTTONS === */
+.like-post, .like-comment {
+  background: none;
+  border: none;
+  color: #e0245e;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.like-post:hover, .like-comment:hover {
+  transform: scale(1.1);
+  color: #b91c49;
+}
+
+.post-footer {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.post-edit-title {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.post-edit-box {
+  width: 100%;
+  height: 80px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.save-post,
+.cancel-post {
+  margin-right: 5px;
+  font-size: 0.9rem;
+}
+
+.comment {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.comment-actions button {
+  margin-right: 5px;
+  font-size: 0.85rem;
+}
+
+.comment-edit-box {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.9rem;
+}
+
+.post-edit-title {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.post-edit-box {
+  width: 100%;
+  height: 80px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.post-edit-sport,
+.post-edit-odds {
+  width: 48%;
+  padding: 6px;
+  margin: 4px 1%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+.save-post,
+.cancel-post {
+  margin-right: 5px;
+  font-size: 0.9rem;
+}
+
+.comment {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.comment-actions button {
+  margin-right: 5px;
+  font-size: 0.85rem;
+}
+
+.comment-edit-box {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 0.9rem;
+}
+
+/* ===== HEADER ===== */
+.main-header {
+  background: #0f172a;
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+.header-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+nav a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+nav a:hover {
+  color: #38bdf8;
+}
+
+/* ===== WELCOME SECTION ===== */
+.welcome-section {
+  text-align: center;
+  background: #f8fafc;
+  padding: 30px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 25px;
+}
+
+.welcome-section h2 {
+  margin-bottom: 5px;
+  font-size: 1.8rem;
+  color: #1e293b;
+}
+
+.tagline {
+  color: #475569;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.quote {
+  color: #64748b;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* ===== FEED ===== */
+.feed {
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.main-feed {
+  flex: 3;
+}
+
+.sidebar {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  height: fit-content;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.sidebar h3 {
+  margin-bottom: 10px;
+  color: #1e293b;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+
+.top-pick {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: transform 0.15s;
+}
+
+.top-pick:hover {
+  transform: scale(1.02);
+}
+
+.top-pick h4 {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.top-pick p {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.top-pick small {
+  color: #64748b;
+}
+
+.rank-badge {
+  background: #38bdf8;
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 6px;
+}
+
+.top-pick {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: transform 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.top-pick:hover {
+  transform: scale(1.02);
+  background: #f1f5f9;
+}
+
+.highlight-post {
+  box-shadow: 0 0 15px 4px rgba(56, 189, 248, 0.7);
+  transition: box-shadow 0.3s ease;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-feed {
+    width: 100%;
+  }
+
+  .feed {
+    width: 95%;
+  }
+
+  .welcome-section {
+    padding: 20px 10px;
+  }
+}
+
 /* ===== HEADER ===== */
 .main-header {
   background: #0f172a;
@@ -24,6 +621,7 @@
   letter-spacing: 0.5px;
 }
 
+/* Default nav for desktop */
 .nav-menu {
   display: flex;
   align-items: center;
@@ -43,7 +641,7 @@
 
 /* ===== HAMBURGER MENU ===== */
 .hamburger {
-  display: none;
+  display: none; /* Hidden by default on desktop */
   font-size: 1.8rem;
   cursor: pointer;
   user-select: none;
@@ -78,88 +676,3 @@
   }
 }
 
-/* ===== WELCOME SECTION ===== */
-.welcome-section {
-  text-align: center;
-  background: #f8fafc;
-  padding: 30px 10px;
-  border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 25px;
-}
-
-/* ===== LAYOUT ===== */
-.layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 30px;
-  width: 90%;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.main-feed {
-  flex: 3;
-}
-
-.sidebar {
-  flex: 1;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 15px;
-  height: fit-content;
-}
-
-/* ===== TOP PICKS ===== */
-.rank-badge {
-  background: #38bdf8;
-  color: white;
-  font-weight: 700;
-  border-radius: 50%;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  text-align: center;
-  line-height: 24px;
-  margin-right: 6px;
-}
-
-.top-pick {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-.top-pick:hover {
-  background: #f1f5f9;
-}
-
-/* Highlight animation */
-.highlight-post {
-  box-shadow: 0 0 15px 4px rgba(56, 189, 248, 0.7);
-  transition: box-shadow 0.3s ease;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .sidebar {
-    display: none;
-  }
-
-  .main-feed {
-    width: 100%;
-  }
-
-  .feed {
-    width: 95%;
-  }
-}
