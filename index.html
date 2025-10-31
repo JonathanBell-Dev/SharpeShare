@@ -11,7 +11,11 @@
   <header class="main-header">
     <div class="header-container">
       <h1 class="logo">SharpeShare 🧠💰</h1>
-      <nav>
+
+      <!-- Hamburger icon for mobile -->
+      <div class="hamburger" id="hamburger">☰</div>
+
+      <nav id="navMenu">
         <a id="homeLink" href="index.html">Home</a>
         <a id="createLink" href="create_post.html" style="display:none;">Create Post</a>
         <a id="profileLink" href="profile.html" style="display:none;">Profile</a>
@@ -45,10 +49,11 @@
     </aside>
   </div>
 
+  <!-- Scripts -->
   <script type="module" src="js/posts.js"></script>
   <script type="module" src="js/top_picks.js"></script>
   <script>
-    // Random quote for dynamic feel
+    // Random quote
     const quotes = [
       '"Scared money don’t make money."',
       '"Bet on yourself first."',
@@ -58,6 +63,13 @@
     ];
     document.getElementById('quote').textContent =
       quotes[Math.floor(Math.random() * quotes.length)];
+
+    // Mobile menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    hamburger.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
   </script>
 </body>
 </html>

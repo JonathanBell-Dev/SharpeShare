@@ -594,3 +594,211 @@ nav a:hover {
     padding: 20px 10px;
   }
 }
+
+/* ===== HEADER ===== */
+.main-header {
+  background: #0f172a;
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.header-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+nav a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+nav a:hover {
+  color: #38bdf8;
+}
+
+/* ===== WELCOME SECTION ===== */
+.welcome-section {
+  text-align: center;
+  background: #f8fafc;
+  padding: 30px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 25px;
+}
+
+.welcome-section h2 {
+  margin-bottom: 5px;
+  font-size: 1.8rem;
+  color: #1e293b;
+}
+
+.tagline {
+  color: #475569;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.quote {
+  color: #64748b;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.main-feed {
+  flex: 3;
+}
+
+.sidebar {
+  flex: 1;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  height: fit-content;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.sidebar h3 {
+  margin-bottom: 10px;
+  color: #1e293b;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+
+/* ===== TOP PICKS ===== */
+.rank-badge {
+  background: #38bdf8;
+  color: white;
+  font-weight: 700;
+  border-radius: 50%;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 6px;
+}
+
+.top-pick {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: transform 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.top-pick:hover {
+  transform: scale(1.02);
+  background: #f1f5f9;
+}
+
+.top-pick h4 {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.top-pick p {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.top-pick small {
+  color: #64748b;
+}
+
+/* Highlighted post */
+.highlight-post {
+  box-shadow: 0 0 15px 4px rgba(56, 189, 248, 0.7);
+  transition: box-shadow 0.3s ease;
+}
+
+/* ===== HAMBURGER MENU ===== */
+.hamburger {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    flex-direction: column;
+    background-color: #0f172a;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    width: 180px;
+  }
+
+  nav a {
+    margin: 8px 0;
+    display: block;
+    text-align: right;
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main-feed {
+    width: 100%;
+  }
+
+  .feed {
+    width: 95%;
+  }
+
+  .welcome-section {
+    padding: 20px 10px;
+  }
+}
