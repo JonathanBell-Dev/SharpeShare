@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Profile - Sharpe Share</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script type="module" src="js/profile.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | SharpeShare</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-  <header>
-    <h1>My Profile 🧠</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="create_post.html" id="createLink">Create Post</a>
-      <a href="#" id="logoutLink">Logout</a>
-    </nav>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">SharpeShare</div>
+      <div class="hamburger" id="hamburger">☰</div>
+      <nav class="nav-menu" id="navMenu">
+        <a href="index.html">Home</a>
+        <a href="create_post.html">Create Post</a>
+        <a href="profile.html">My Profile</a>
+        <a href="#" id="logoutLink">Logout</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="profile-info">
-      <h2>Welcome, <span id="username">Loading...</span></h2>
-      <p id="email"></p>
-      <p><strong>Total Posts:</strong> <span id="postCount">0</span></p>
-    </section>
+  <div class="profile-container">
+    <h2 id="profileName">My Profile</h2>
+    <p>Here are your recent posts:</p>
+    <div id="userPosts" class="user-posts"></div>
+  </div>
 
-    <hr>
-
-    <section>
-      <h2>Your Posts</h2>
-      <div id="userPosts">Loading your posts...</div>
-    </section>
-  </main>
+  <script src="js/supabase.js"></script>
+  <script src="js/profile.js"></script>
+  <script>
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navMenu').classList.toggle('active');
+    });
+  </script>
 </body>
 </html>

@@ -7,74 +7,45 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- ========== HEADER ========== -->
   <header class="main-header">
     <div class="header-container">
-      <h1 class="logo">SharpeShare 🧠💰</h1>
-
-      <!-- Hamburger for mobile -->
+      <div class="logo">SharpeShare</div>
       <div class="hamburger" id="hamburger">☰</div>
-
-      <nav id="navMenu" class="nav-menu">
-        <a id="homeLink" href="index.html">Home</a>
-        <a id="createLink" href="create_post.html" style="display:none;">Create Post</a>
-        <a id="profileLink" href="profile.html" style="display:none;">Profile</a>
-        <a id="loginLink" href="login.html">Login</a>
-        <a id="registerLink" href="register.html">Register</a>
-        <a id="logoutLink" href="#" style="display:none;">Logout</a>
+      <nav class="nav-menu" id="navMenu">
+        <a href="index.html" id="homeLink">Home</a>
+        <a href="create_post.html" id="createLink">Create Post</a>
+        <a href="profile.html" id="profileLink">My Profile</a>
+        <a href="login.html" id="loginLink">Login</a>
+        <a href="register.html" id="registerLink">Register</a>
+        <a href="#" id="logoutLink">Logout</a>
       </nav>
     </div>
   </header>
 
-  <!-- ========== WELCOME SECTION ========== -->
   <section class="welcome-section">
     <h2>Welcome to SharpeShare</h2>
-    <p class="tagline">Where bettors share insights, picks, and bragging rights.</p>
-    <blockquote id="quote" class="quote"></blockquote>
+    <p class="tagline">A social hub for bettors to share picks, predictions, and hot takes.</p>
+    <p class="quote">"Every pick tells a story — share yours."</p>
   </section>
 
-  <!-- ========== MAIN CONTENT ========== -->
   <div class="layout">
     <main class="main-feed">
       <div id="feed" class="feed"></div>
     </main>
 
     <aside class="sidebar">
-      <h3>🔥 Top Picks This Week</h3>
-      <div id="top-picks">
-        <p>Loading...</p>
-      </div>
+      <h3>Top Picks This Week</h3>
+      <div id="topPicks"></div>
     </aside>
   </div>
 
-  <!-- JS -->
-  <script type="module" src="js/posts.js"></script>
-  <script type="module" src="js/top_picks.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/posts.js"></script>
+  <script src="js/top_picks.js"></script>
   <script>
-    // Random betting quote
-    const quotes = [
-      '"Scared money don’t make money."',
-      '"Bet on yourself first."',
-      '"Every underdog has its day."',
-      '"Luck favors the prepared mind."',
-      '"Winners focus on execution, not emotion."'
-    ];
-    document.getElementById('quote').textContent =
-      quotes[Math.floor(Math.random() * quotes.length)];
-
-    // Mobile menu toggle
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('navMenu');
-    hamburger.addEventListener('click', () => {
-      navMenu.classList.toggle('active');
-    });
-
-    // Close menu when a link is tapped
-    document.querySelectorAll('.nav-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) navMenu.classList.remove('active');
-      });
-    });
+    hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
   </script>
 </body>
 </html>
