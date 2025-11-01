@@ -1,64 +1,48 @@
-// js/create_post.js
 import { supabase } from './supabase.js';
 
-async function checkUser() {
+document.addEventListener('DOMContentLoaded', async () => {
+  const form = document.getElementById('createPostForm');
+
+  // Get current user
   const { data: { user } } = await supabase.auth.getUser();
+
   if (!user) {
     alert('You must be logged in to create a post.');
     window.location = 'login.html';
-  }
-  return user;
-}
-
-async function createPost() {
-  const user = await checkUser();
-
-  const title = document.getElementById('title').value.trim();
-  const content = document.getElementById('content').value.trim();
-  const sport = document.getElementById('sport').value.trim();
-  const odds = document.getElementById('odds').value.trim();
-
-  if (!title || !content || !sport || !odds) {
-    document.getElementById('message').textContent = 'Please fill out all fields.';
     return;
   }
 
-  // ✅ Pull username from Auth metadata
-  const username = user.user_metadata?.username || 'Anonymous';
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  // ✅ Insert post including username
-  const { error } = await supabase
-    .from('posts')
-    .insert([
-      {
-        user_id: user.id,
-        username,
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const sport = document.getElementById('sport').value.trim();
+    const odds = document.getElementById('odds').value.trim();
+
+    if (!title || !content) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('posts')
+      .insert([{
         title,
         content,
         sport,
-        odds
-      }
-    ]);
+        odds,
+        user_id: user.id,
+        username: user.email.split('@')[0]
+      }]);
 
-  if (error) {
-    console.error(error);
-    document.getElementById('message').textContent = 'Error creating post: ' + error.message;
-  } else {
-    document.getElementById('message').textContent = 'Post created successfully!';
-    setTimeout(() => {
-      window.location = 'index.html';
-    }, 1000);
-  }
-}
+    if (error) {
+      console.error('Error creating post:', error);
+      alert('Failed to post your pick.');
+      return;
+    }
 
-document.getElementById('postBtn').addEventListener('click', createPost);
-
-// Logout
-const logoutBtn = document.getElementById('logoutLink');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    await supabase.auth.signOut();
-    window.location = 'login.html';
+    alert('Post shared successfully!');
+    window.location = 'index.html';
   });
-}
+});
