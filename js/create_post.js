@@ -25,19 +25,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // Insert post into Supabase
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('posts')
-      .insert([
-        {
-          title,
-          content,
-          sport,
-          odds,
-          user_id: user.id,
-          username: user.email.split('@')[0],
-        },
-      ]);
+      .insert([{
+        title,
+        content,
+        sport,
+        odds,
+        user_id: user.id,
+        username: user.email.split('@')[0]
+      }]);
 
     if (error) {
       console.error('Error creating post:', error);
@@ -46,6 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     alert('Post shared successfully!');
-    window.location = 'index.html'; // redirect to homepage after posting
+    window.location = 'index.html';
   });
 });
